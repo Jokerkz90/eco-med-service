@@ -13,26 +13,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Настройка SMTP транспорта
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,       // smtp.gmail.com
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: false, // true для 465, false для 587
+      service: "gmail",
       auth: {
-        user: process.env.SMTP_USER,     // ecomedkaraganda@gmail.com
-        pass: process.env.SMTP_PASS,     // пароль приложения
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
     await transporter.sendMail({
       from: `"Eco Med Service" <${process.env.SMTP_USER}>`,
-      to: process.env.MAIL_TO,           // куда будут приходить письма
+      to: process.env.MAIL_TO,
       subject: "Новая заявка с сайта",
-      text: `
-        Имя: ${name}
-        Email: ${email}
-        Сообщение: ${message}
-      `,
       html: `
         <h3>Новая заявка с сайта</h3>
         <p><strong>Имя:</strong> ${name}</p>
@@ -43,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ message: "Письмо отправлено!" });
   } catch (error) {
-    console.error(error);
+    console.error("Ошибка отправки:", error);
     return res.status(500).json({ message: "Ошибка при отправке письма" });
   }
 }
