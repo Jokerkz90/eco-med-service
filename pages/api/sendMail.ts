@@ -13,19 +13,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Настройка SMTP транспорта
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      host: process.env.SMTP_HOST,       // smtp.gmail.com
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false, // true для 465, false для 587
       auth: {
-        user: process.env.SMTP_USER, ecomedkaraganda@gmail.com
-        pass: process.env.SMTP_PASS, ycdw eftn ldgq iyje
+        user: process.env.SMTP_USER,     // ecomedkaraganda@gmail.com
+        pass: process.env.SMTP_PASS,     // пароль приложения
       },
     });
 
     await transporter.sendMail({
       from: `"Eco Med Service" <${process.env.SMTP_USER}>`,
-      to: process.env.MAIL_TO,
+      to: process.env.MAIL_TO,           // куда будут приходить письма
       subject: "Новая заявка с сайта",
       text: `
         Имя: ${name}
